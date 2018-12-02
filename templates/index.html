@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+</head>
+<body>
+<p><strong>Curran Place Solar Panel Data</strong></p>
+
+<p>Click
+    <a title="50 Most Recent Data Samples"
+
+    href=latest target="_blank" rel="noopener">here</a>
+    to view most recent data samples</p>
+</body>
+
+<form action="/daterange" method="post">
+   {% csrf_token %}
+    <p>Enter a range of dates for a the corresponding data</p>
+    (Start)
+   <input type="date" class="form-control" id="start" placeholder="" value=""
+          name='start'>
+    (End)
+    <input type="date" class="form-control" id="end" placeholder="" value=""
+          name='end'>
+
+   <input type="submit" value="Submit">
+</form>
+
+
+</html>
