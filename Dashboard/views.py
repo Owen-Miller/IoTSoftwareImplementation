@@ -11,8 +11,8 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import io
 import numpy as np
 from django.shortcuts import render
-from matplotlib import dates
-
+import matplotlib.dates as md
+import datetime as dt
 
 def home(request):
     return render(request, 'index.html')
@@ -20,7 +20,7 @@ def home(request):
 
 def latest(request):
     # Use bigsense API to download last [n] data points
-    url = 'http://206.189.227.139:8181/Query/Latest/40.csv?Units=Standard'
+    url = 'http://206.189.227.139:8181/Query/Latest/25.csv?Units=Standard'
     ftpstream = urllib.request.urlopen(url)
     csvfile = csv.reader(codecs.iterdecode(ftpstream, 'utf-8'))
     data = []
@@ -42,29 +42,28 @@ def latest(request):
     y = [float(s) for s in y]
     x = [x[0] for x in data]
 
-    x = [y[10:] for y in x]
-    x = [str(y).split('.', 1)[0] for y in x]
+    x = [dt.datetime.strptime(y, '%Y-%m-%d %H:%M:%S.%f') for y in x]
+    x = md.date2num(x)
+
 
     fig = plt.figure(figsize=(12, 7.5))
     ax = fig.add_subplot(111)
 
-    #dates= matplotlib.dates.num
-    #print(dates)
+    ax.plot_date(x, y, xdate=True)
+    #xfmt = md.DateFormatter('%m-%d %H:%M')
 
-    #ax.axis('auto')
+    #ax.xaxis.set_major_formatter(xfmt)
     ax.set_xlabel('Time')
     ax.set_ylabel('Temperature [F]')
-    ax.scatter(x, y)
-
 
     # Rotate the ticks on X axis for readability
     for tick in ax.get_xticklabels():
         tick.set_rotation(45)
 
-    start, end = ax.get_xlim()
+    #start, end = ax.get_xlim()
 
     # Limit the number of ticks on the x axis readability
-    ax.set_xticks(np.arange(start, end, 2))
+    #ax.set_xticks(np.arange(start, end, 2))
 
     buf = io.BytesIO()
     canvas = FigureCanvas(fig)
@@ -96,37 +95,33 @@ def daterange(request):
         # Remove colume headings from the data
         data = data[1:]
 
-        print(data)
-
         # Reversed the data so time flows in positive direction
         data.reverse()
-        print(data)
+
         # Massaging the data for formatting when plotted
         y = [x[1] for x in data]
         y = [float(s) for s in y]
         x = [x[0] for x in data]
-        #x = [y[10:] for y in x]
-        x = [str(y).split('.', 1)[0] for y in x]
+        x = [dt.datetime.strptime(y, '%Y-%m-%d %H:%M:%S.%f') for y in x]
+        x = md.date2num(x)
 
         fig = plt.figure(figsize=(12, 7.5))
-        plt.gcf().subplots_adjust(bottom=0.2)
         ax = fig.add_subplot(111)
 
-
-        ax.axis('auto')
+        ax.plot_date(x, y, xdate=True)
         ax.set_xlabel('Time')
+
+        plt.gcf().subplots_adjust(bottom=0.30)
         ax.set_ylabel('Temperature [F]')
-        ax.scatter(x, y)
 
         # Rotate the ticks on X axis for readability
         for tick in ax.get_xticklabels():
             tick.set_rotation(45)
 
-        start, end = ax.get_xlim()
+        # start, end = ax.get_xlim()
 
         # Limit the number of ticks on the x axis readability
-        ax.set_xticks(np.arange(start, end, 8))
-        #ax.set_yticks(np.arange(start, end, 4 * len(y) / len(y)))
+        # ax.set_xticks(np.arange(start, end, 2))
 
         buf = io.BytesIO()
         canvas = FigureCanvas(fig)
