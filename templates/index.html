@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     <meta charset="UTF-8">
     <title>Home Page</title>
 </head>
 <body>
-<p><strong>Curran Place Solar Panel Data</strong></p>
+<h2><strong>Curran Place Solar Panel Data</strong></h2>
 
 <p>Click
     <a title="50 Most Recent Data Samples"
@@ -17,14 +19,19 @@
 <form action="/daterange" method="post">
    {% csrf_token %}
     <p>Enter a range of dates for a the corresponding data</p>
-    (Start)
-   <input type="date" class="form-control" id="start" placeholder="" value=""
-          name='start'>
-    (End)
-    <input type="date" class="form-control" id="end" placeholder="" value=""
-          name='end'>
+    <div class="col-xs-3">
 
-   <input type="submit" value="Submit">
+         <label for="start">Start Date</label>
+       <input type="date" class="form-control" id="start" placeholder="" value=""
+              name='start'>
+
+        <label for="end">End Date</label>
+
+        <input type="date" class="form-control" id="end" placeholder="" value=""
+              name='end'>
+
+       <input type="submit" value="Submit">
+    </div>
 </form>
 
 
