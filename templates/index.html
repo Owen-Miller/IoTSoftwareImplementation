@@ -9,12 +9,29 @@
 <body>
 <h2><strong>Curran Place Solar Panel Data</strong></h2>
 
-<p>Click
-    <a title="50 Most Recent Data Samples"
+<form action="/latest/" method="post">
+    {% csrf_token %}
+    <p>Click
+        <a title="50 Most Recent Data Samples"
 
-    href=latest target="_blank" rel="noopener">here</a>
-    to view most recent data samples</p>
-</body>
+        href=latest target="_blank" rel="noopener">here</a>
+        to view most recent data samples
+    </p>
+
+    <p>Download
+            <label for="number">
+                <input type="text" class="form-control" id="number" size="4"
+              name='number'>
+        </div>
+
+        </label>
+        most recent samples
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+    </p>
+</form>
+
+
 
 <form action="/daterange" method="post">
    {% csrf_token %}
@@ -26,13 +43,15 @@
               name='start'>
 
         <label for="end">End Date</label>
-
         <input type="date" class="form-control" id="end" placeholder="" value=""
               name='end'>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" name="Check1">
 
-       <input type="submit" value="Submit">
+            <label for="Check1">Download CSV</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+
     </div>
 </form>
-
-
-</html>

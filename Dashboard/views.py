@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 import csv
 import urllib.request
 import codecs
@@ -11,7 +11,8 @@ import io
 from django.shortcuts import render
 import matplotlib.dates as md
 import datetime as dt
-
+import csv
+import time
 
 
 def home(request):
@@ -20,10 +21,16 @@ def home(request):
 
 def latest(request):
     # Use bigsense API to download last [n] data points
-    url = 'http://206.189.227.139:8181/Query/Latest/25.csv?Units=Standard'
+    startnumber = 50
+    url = 'http://206.189.227.139:8181/Query/Latest/'+str(startnumber)+'.csv?RelayID=pIoT&Units=Standard'
     ftpstream = urllib.request.urlopen(url)
     csvfile = csv.reader(codecs.iterdecode(ftpstream, 'utf-8'))
     data = []
+
+    if request.method == 'POST':
+        number = request.POST.get('number')
+        url = 'http://206.189.227.139:8181/Query/Latest/' + str(number) + '.csv?RelayID=pIoT&Units=Standard'
+        return HttpResponseRedirect(url)
 
     try:
         for column in csvfile:
@@ -44,6 +51,7 @@ def daterange(request):
         end = request.POST.get('end')
         start = str(start).replace('-', '')
         end = str(end).replace('-', '')
+        checkbox = request.POST.getlist('Check1')
 
         url = 'http://206.189.227.139:8181/Query/DateRange/' + start + '/' + end + '.csv?Units=Standard'
 
@@ -51,6 +59,9 @@ def daterange(request):
         csvfile = csv.reader(codecs.iterdecode(ftpstream, 'utf-8'))
         data = []
 
+        for x in checkbox:
+            if x:
+                return HttpResponseRedirect(url)
         try:
             for column in csvfile:
                 # From the downloaded csv use the 2nd and 7th column, data and temp respectively
